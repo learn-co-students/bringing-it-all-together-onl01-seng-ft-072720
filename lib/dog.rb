@@ -87,4 +87,15 @@ class Dog
         dog = DB[:conn].execute(sql, name, breed).first
     end
 
+    def self.find_by_name(name)
+        sql = <<-SQL
+            SELECT *
+            FROM dogs
+            WHERE name = ?
+            LIMIT 1
+        SQL
+        dog = DB[:conn].execute(sql, name).first
+        self.new(id: dog[0], name: dog[1], breed: dog[2])
+    end
+
 end
