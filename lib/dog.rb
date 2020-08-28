@@ -104,21 +104,44 @@ end
 
 
 def self.create(hash)
-   # binding.pry
+    # binding.pry
     dog = Dog.new(hash)
     dog.save
     dog
 end
 
-def self.find_or_create_by(hash)
-   # binding.pry
-   name = hash[:name]
-   breed = hash[:breed]
-
-        test = Dog.find_by_name(name)
-     binding.pry
-end
+# def self.create(name:, breed:)
+#     dog = Dog.new(name, breed)
+#     dog.save
+#     dog
+#   end
 
 
+# def self.find_or_create_by(hash)
+#    # binding.pry
+#    name = hash[:name]
+#    breed = hash[:breed]
+
+#         test = Dog.find_by_name(name)
+#     # binding.pry
+#     if test.name == name && test.breed == breed
+# end
+
+def self.find_or_create_by(name:, breed:)
+    dog = DB[:conn].execute("SELECT * FROM dogs WHERE name = ? AND breed = ?", name, breed)
+   
+    if !dog.empty?
+      dog_data = dog[0]
+      dog = Dog.new_from_db(dog_data)
+    #binding.pry
+    else
+        hash = {}
+        hash[:name] = name
+        hash[:breed] = breed
+      dog = Dog.create(hash)
+    
+    end
+  dog
+  end
 
 end
