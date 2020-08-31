@@ -1,3 +1,4 @@
+require 'pry'
 class Dog
 
     attr_accessor :id, :name, :breed
@@ -27,10 +28,14 @@ class Dog
     end
 
     def save
+        if self.id
+            self.update
+        else
         DB[:conn].execute("INSERT INTO dogs (name, breed) VALUES (?, ?);", name, breed)
 
         @id = DB[:conn].execute("SELECT last_insert_rowid() FROM dogs")[0][0]
-        
+        # binding.pry
+        end
     end
 
     def self.create(name:, breed:)
@@ -46,5 +51,7 @@ class Dog
         new_dog.breed = row[2]
         new_dog  
       end
+
+      
 
 end
